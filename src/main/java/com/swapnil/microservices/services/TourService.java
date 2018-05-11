@@ -22,8 +22,8 @@ public class TourService {
 	}
 
 	public Tour createTour(String title, String description, String blurb, Integer price, String duration,
-			String bullets, String keywords, String tourPackageCode, Difficulty difficult, Region region) {
-		TourPackage tourPackage = tourPackageRepository.findById(tourPackageCode).get();
+			String bullets, String keywords, String tourPackageName, Difficulty difficult, Region region) {
+		TourPackage tourPackage = tourPackageRepository.findByName(tourPackageName);
 
 		return tourRepository.save(new Tour(title, description, blurb, price, duration, bullets, keywords, tourPackage,
 				difficult, region));

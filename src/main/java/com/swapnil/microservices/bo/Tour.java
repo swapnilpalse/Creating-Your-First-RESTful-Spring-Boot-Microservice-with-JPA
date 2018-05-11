@@ -11,17 +11,17 @@ public class Tour implements Serializable {
 	private Long Id;
 	@Column
 	private String title;
-	@Column
+	@Column(length=1000000)
 	private String description;
-	@Column
+	@Column(length=1000000)
 	private String blurb;
 	@Column
 	private Integer price;
 	@Column
 	private String duration;
-	@Column
+	@Column(length=1000000)
 	private String bullets;
-	@Column
+	@Column(length=1000000)
 	private String keywords;
 	@ManyToOne
 	private TourPackage tourPackage;

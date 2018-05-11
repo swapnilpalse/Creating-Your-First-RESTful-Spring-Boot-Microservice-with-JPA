@@ -54,12 +54,12 @@ public class MicroservicesApplication implements CommandLineRunner {
 		tourPackageService.createTourPackageRepository("CH", "California Hot springs");
 		tourPackageService.createTourPackageRepository("CY", "Cycle California");
 		tourPackageService.createTourPackageRepository("DS", "From Desert to Sea");
-		tourPackageService.createTourPackageRepository("KC", "Backpack Cal");
+		tourPackageService.createTourPackageRepository("KC", "Keywood Winds");
 		tourPackageService.createTourPackageRepository("NW", "Nature Watch");
 		tourPackageService.createTourPackageRepository("SC", "Snowboard Cali");
 		tourPackageService.createTourPackageRepository("TC", "Taste of California");
 		tourPackageService.lookup().forEach(tourPackage -> System.out.println(tourPackage));
-		TourFromFile.importTours().forEach(t-> tourService.createTour(t.title, t.description, t.blurb, Integer.parseInt(t.length), t.price, t.bullets, t.keywords, t.packageType, Difficulty.valueOf(t.difficulty), Region.findByLabel(t.region)));
+		TourFromFile.importTours().forEach(t-> tourService.createTour(t.title, t.description, t.blurb, Integer.parseInt(t.price), t.length, t.bullets, t.keywords, t.packageType, Difficulty.valueOf(t.difficulty), Region.findByLabel(t.region)));
 		System.out.println("Number of Tours=" +tourService.total());
 	}
 }
