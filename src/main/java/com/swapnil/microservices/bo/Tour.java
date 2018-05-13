@@ -8,7 +8,7 @@ import javax.persistence.*;
 public class Tour implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long Id;
+	private Integer id;
 	@Column
 	private String title;
 	@Column(length=1000000)
@@ -52,12 +52,12 @@ public class Tour implements Serializable {
 	}
 
 
-	public Long getId() {
-		return Id;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setId(Long id) {
-		Id = id;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getTitle() {

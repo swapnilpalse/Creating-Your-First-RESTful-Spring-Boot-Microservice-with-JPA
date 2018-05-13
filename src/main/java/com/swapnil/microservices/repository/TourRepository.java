@@ -8,7 +8,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 
 import com.swapnil.microservices.bo.Tour;
 
-public interface TourRepository extends PagingAndSortingRepository<Tour, Long> {
+public interface TourRepository extends PagingAndSortingRepository<Tour, Integer> {
 	Page<Tour> findByTourPackageCode(@Param("code") String code, Pageable pageable);
 
 	@Override
@@ -24,7 +24,7 @@ void deleteAll() ;
 
 	@Override
 	@RestResource(exported=false)
-	void deleteById(Long arg0);
+	void deleteById(Integer arg0);
 
 	@Override
 	@RestResource(exported=false)
