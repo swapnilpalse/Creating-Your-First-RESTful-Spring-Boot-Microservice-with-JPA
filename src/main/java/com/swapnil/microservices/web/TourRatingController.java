@@ -7,6 +7,9 @@ import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,12 +52,14 @@ public class TourRatingController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public List<RatingDto> getAllRatingsForTour(@PathVariable(value = "tourId") int tourId) {
+	public Page<RatingDto> getAllRatingsForTour(@PathVariable(value = "tourId") int tourId,Pageable pageable) {
 		verifyTour(tourId);
-		return tourRatingRepository.findByPkTourId(tourId).stream().map(tourRating -> toDto(tourRating))
-				.collect(Collectors.toList());
+		Page<TourRating> tourRatingPage= tourRatingRepository.findByPkTourId(tourId, pageable);
+		List<RatingDto> ratingDtos=tourRatingPage.getContent().stream().map(tourRating -> toDto(tourRating)).collect(Collectors.toList());
+		return new PageImpl<RatingDto>(ratingDtos,pageable,tourRatingPage.getTotalPages());
 	}
-@RequestMapping(method=RequestMethod.GET,path="/average")
+
+	@RequestMapping(method = RequestMethod.GET, path = "/average")
 	public AbstractMap.SimpleEntry<String, Double> getAverage(@PathVariable(value = "tourId") int tourId) {
 		verifyTour(tourId);
 		List<TourRating> tourRatings = tourRatingRepository.findByPkTourId(tourId);
@@ -63,6 +68,37 @@ public class TourRatingController {
 				average.isPresent() ? average.getAsDouble() : null);
 	}
 
+	@RequestMapping(method = RequestMethod.PUT)
+	public RatingDto updateWithPut(@PathVariable(value = "tourId") int tourId,
+			@RequestBody @Validated RatingDto ratingDto) {
+		TourRating tourRating = verifyTourRating(tourId, ratingDto.getCustomerId());
+		tourRating.setScore(ratingDto.getScore());
+		tourRating.setComment(ratingDto.getComment());
+		return toDto(tourRatingRepository.save(tourRating));
+
+	}
+
+	@RequestMapping(method = RequestMethod.PATCH)
+	public RatingDto updateWithPatch(@PathVariable(value = "tourId") int tourId,
+			@RequestBody @Validated RatingDto ratingDto) {
+		TourRating tourRating = verifyTourRating(tourId, ratingDto.getCustomerId());
+		if (ratingDto.getScore() != null) {
+			tourRating.setScore(ratingDto.getScore());
+		}
+		if (ratingDto.getComment() != null) {
+			tourRating.setComment(ratingDto.getComment());
+		}
+		return toDto(tourRatingRepository.save(tourRating));
+
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE,path="/{customerId}")
+	public void delete(@PathVariable(value = "tourId") int tourId, @PathVariable(value = "customerId") int customerId) {
+		TourRating tourRating=tourRatingRepository.findByPkTourIdAndPkCustomerId(tourId, customerId);
+		tourRatingRepository.delete(tourRating);
+	}
+
+			
 	private RatingDto toDto(TourRating tourRating) {
 		return new RatingDto(tourRating.getScore(), tourRating.getComment(), tourRating.getPk().getCustomerId());
 	}
